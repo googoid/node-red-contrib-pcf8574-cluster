@@ -22,7 +22,7 @@
     "url": "https://github.com/david-kasparov/node-red-contrib-pcf8574-cluster.git"
   },
   "dependencies": {
-    "i2c-bus": "^1.2.2",
-    "pcf8574cluster": "^0.0.4"
+    "i2c-bus": "^5.2.2",
+    "pcf8574cluster": "googoid/PCF8574Cluster"
   }
 }
