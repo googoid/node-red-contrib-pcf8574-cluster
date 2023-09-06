@@ -1,8 +1,8 @@
-const Cluster = require("./cluster");
+const Cluster = require('./cluster');
 
 const instances = {};
 
-module.exports = (RED) => {
+module.exports = RED => {
   function ClusterInNode(n) {
     RED.nodes.createNode(this, n);
 
@@ -15,10 +15,7 @@ module.exports = (RED) => {
 
     const cluster = instances[n.cluster];
 
-    cluster.inputPin(n.pin, n.inverted)
-    .then(() => {
-
-    });
+    cluster.inputPin(n.pin, n.inverted).then(() => {});
 
     function onClusterInput(msg) {
       if (msg.pin != n.pin) {
@@ -41,9 +38,7 @@ module.exports = (RED) => {
     });
   }
 
-  RED.nodes.registerType("cluster-in", ClusterInNode);
-
-
+  RED.nodes.registerType('cluster-in', ClusterInNode);
 
   function ClusterOutNode(n) {
     RED.nodes.createNode(this, n);
@@ -57,21 +52,14 @@ module.exports = (RED) => {
 
     const cluster = instances[n.cluster];
 
-    cluster.outputPin(n.pin, n.inverted, n.initialValue)
-    .then(() => {
+    cluster.outputPin(n.pin, n.inverted, n.initialValue).then(() => {});
 
+    node.on('input', msg => {
+      cluster.setPin(n.pin, msg.payload.value).then(() => {});
     });
 
-    node.on('input', (msg) => {
-      cluster.setPin(n.pin, msg.payload.value)
-      .then(() => {
-
-      });
-    });
-
-    node.on('close', (done) => {
-      cluster.setAllPins(false)
-      .then(() => {
+    node.on('close', done => {
+      cluster.setAllPins(false).then(() => {
         delete instances[n.cluster];
 
         done();
@@ -79,9 +67,7 @@ module.exports = (RED) => {
     });
   }
 
-  RED.nodes.registerType("cluster-out", ClusterOutNode);
-
-
+  RED.nodes.registerType('cluster-out', ClusterOutNode);
 
   function PinValueNode(n) {
     RED.nodes.createNode(this, n);
@@ -95,7 +81,7 @@ module.exports = (RED) => {
 
     const cluster = instances[n.cluster];
 
-    node.on('input', (msg) => {
+    node.on('input', msg => {
       let pinValue = cluster.getPinValue(n.pin);
 
       msg.payload.pin_number = parseInt(n.pin);
@@ -109,5 +95,5 @@ module.exports = (RED) => {
     });
   }
 
-  RED.nodes.registerType("pin-value", PinValueNode);
+  RED.nodes.registerType('pin-value', PinValueNode);
 };
