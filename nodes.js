@@ -15,7 +15,10 @@ module.exports = RED => {
 
     const cluster = instances[n.cluster];
 
-    cluster.inputPin(n.pin, n.inverted).then(() => {});
+    cluster
+      .inputPin(n.pin, n.inverted)
+      .then(() => {})
+      .catch(console.error);
 
     function onClusterInput(msg) {
       if (msg.pin != n.pin) {
@@ -52,18 +55,27 @@ module.exports = RED => {
 
     const cluster = instances[n.cluster];
 
-    cluster.outputPin(n.pin, n.inverted, n.initialValue).then(() => {});
+    cluster
+      .outputPin(n.pin, n.inverted, n.initialValue)
+      .then(() => {})
+      .catch(console.error);
 
     node.on('input', msg => {
-      cluster.setPin(n.pin, msg.payload.value).then(() => {});
+      cluster
+        .setPin(n.pin, msg.payload.value)
+        .then(() => {})
+        .catch(console.error);
     });
 
     node.on('close', done => {
-      cluster.setAllPins(false).then(() => {
-        delete instances[n.cluster];
+      cluster
+        .setAllPins(false)
+        .then(() => {
+          delete instances[n.cluster];
 
-        done();
-      });
+          done();
+        })
+        .catch(console.error);
     });
   }
 
